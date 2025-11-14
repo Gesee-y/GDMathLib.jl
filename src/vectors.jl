@@ -379,11 +379,26 @@ end
 rotateby(q::Quaternion, v::Vector3D,s=1) = quat_mul(iQuatf(v.x*s,v.y*s,v.z*s,0),q)
 function add_scaled(q::Quat,v::Vector3D,s=1)
 	q2 = iQuatf(v.x*s,v.y*s,v.z*s,0)*q
-	q += q
+	q += q2
+end
+function quat_fromaxis_angle(v::Vector3D, angle)
+	nv = vnormalize(v)
+	s = sin(angle/2)
+
+	return iQuatf(nv*s, cos(angle/2))
 end
 
-add_scaled(v::iVec3{T1}, v2::Vector3D{T2}, a::Real) where {T1, T2} = iVec2{promote_type(T1, T2)}(v.x+v2.x*a,
-	                                                                                v.y+v2.y*a,v.z+v2.z*a)
+function quat_from_euler(roll, pitch, yaw)
+	qx = quat_fromaxis_angle(iVec3f(1, 0, 0), roll)
+	qy = quat_fromaxis_angle(iVec3f(1, 0, 0), pitch)
+	qz = quat_fromaxis_angle(iVec3f(1, 0, 0), yaw)
+
+	q = qz*qy*qx
+
+	return vnormalize(q)
+end
+
+add_scaled(v::iVec3{T1}, v2::Vector3D{T2}, a::Real) where {T1, T2} = iVec2{promote_type(T1, T2)}(v.x+v2.x*a,                                                                                v.y+v2.y*a,v.z+v2.z*a)
 add_scaled(v::Vec3, v2::Vector3D, a::Real) = (v.data = (v.x+v2.x*a,v.y+v2.y*a,v.z+v2.z*a))
 
 

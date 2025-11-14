@@ -52,7 +52,7 @@ Create a new N dimensional transformation.
 mutable struct Transform{N}
 	space :: VectorSpace{N,Float64}
 	position :: SVector{Float32,N}
-	angle :: Float64
+	angle :: Vec3{Float32}
 	rotation_axis::Vec3{Float32}
 	scale :: SVector{Float32,N}
 	matrix :: Union{Mat4{Float32},iMat4{Float32}}
@@ -63,7 +63,7 @@ mutable struct Transform{N}
 		angle = 0.0
 		scale = SVector{Float32,N}(Float32(1))
 
-		return new{N}(vs, pos, angle, Vec3{Float32}(1,1,1), scale)
+		return new{N}(vs, pos, Vec3{Float32}(Float32(0)), Vec3{Float32}(1,1,1), scale)
 	end
 	Transform{N}(pos::SVector{Float32,N}) where N = begin
 	    t = Transform{N}()
@@ -144,10 +144,6 @@ function update_transform_matrix!(t::Transform{2};pos=true,rot=true,scale=true)
 		0.0,0.0,1.0,0.0,
 		0.0,0.0,0.0,1.0,
 	)
-	m1 = pos ? _get_translation_mat(position) : 1
-	m2 = rot ? _get_rotation_matrix(t.angle,t.rotation_axis) : 1
-	m3 = scale ? _get_scale_matrix(t.scale) : 1
-
 	#t.matrix = m3 * m2 * m1
 	t.matrix = matrix
 end

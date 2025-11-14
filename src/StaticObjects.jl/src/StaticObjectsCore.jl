@@ -163,11 +163,6 @@ mutable struct SArray{T <: Any,D <: Tuple,N,L} <: AbstractSArray{T,D,N}
 		return new{T,D,N,L}()
 	end
 
-	function SArray{T,D,N,L}(elt::T) where{T <: Any,D <: Tuple,N,L}
-		@boundscheck _check_argument(D,N,L)
-		return new{T,D,N,L}(fill_tuple(elt,L))
-	end
-
 	function SArray{T,D,N,L}(elt::AbstractArray{T,N}) where{T <: Any,D <: Tuple,N,L}
 		length(elt) != L && throw(DimensionMismatch("The array does not have the same length as L($L) passed in parameters"))
 		
