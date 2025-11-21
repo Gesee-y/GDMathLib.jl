@@ -350,7 +350,7 @@ vnormalize_and_norm(v::AbstractSArray{T}) where T <: Number = begin
     n = vnorm(v)
     return n > zero(n) ? (v/n, n) : error("Trying to normalize null value.")
 end
-vnormalize_and_norm(v::AbstractSArray{T}) where T <: Number = begin
+vnormalize_and_norm(v::Quaternion{T}) where T <: Number = begin
     n = vnorm(v)
     return n > zero(n) ? (v/n, n) : (iQuatf(0,0,0,1), 0)
 end
